@@ -9,8 +9,8 @@ fn main() {
 
     if args.len() == 2 {
         if args[1] == "help" {
-            println!("{} {}", "Usage:".green(), "command [depth]".yellow());
-            println!("{} {}", "Example:".green(), "command 2 outputs the tree with a depth of 2.".yellow());
+            println!("{} {}", "Usage:".cyan(), "ft [depth]. Depth is optional.");
+            println!("{} {}", "Example:".cyan(), "\"ft 2\" outputs the tree with a depth of 2.");
             return
         } else {
             depth = args[1].parse::<u32>().expect("Depth must be a number.");
@@ -128,7 +128,7 @@ fn print_directory(path: &str, start: &str, indentation: u32, depth: u32) {
 
             match file_path.to_str() {
                 Some(p) => {
-                    if indentation <= depth {
+                    if indentation < depth {
                         print_directory(p, format!("{}{}", start, prepend).as_str(), indentation + 1, depth);
                     }
                 }

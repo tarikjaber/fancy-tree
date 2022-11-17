@@ -1,3 +1,5 @@
+![Demo of Fancy Tree](./images/example.png)
+
 ## Installation
 Run the following command to build the executable:
 ```bash
