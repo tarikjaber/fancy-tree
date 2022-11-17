@@ -60,7 +60,6 @@ fn print_directory(path: &str, start: &str, indentation: u32, depth: u32) {
         print!("{}", start);
 
         index += 1;
-        //println!("Index: {}, Num Paths: {}", index, num_paths);
         if index == num_paths {
             match indentation % 3 {
                 0=>{
@@ -77,7 +76,6 @@ fn print_directory(path: &str, start: &str, indentation: u32, depth: u32) {
                 },
                 _=>panic!("Indentation is not a multiple of 3."),
             }
-
         } else {
             match indentation % 3 {
                 0=>{
@@ -96,18 +94,17 @@ fn print_directory(path: &str, start: &str, indentation: u32, depth: u32) {
             }
         }
 
-
         let fname: String;
 
         match file_name.to_str() {
-                Some(p) => {
-                    fname = p.to_string();
-                }
-                None => {
-                    println!("Error: file name is not valid UTF-8");
-                    continue;
-                }
+            Some(p) => {
+                fname = p.to_string();
             }
+            None => {
+                println!("Error: file name is not valid UTF-8");
+                continue;
+            }
+        }
 
         if file_path.is_dir() {
             let mut dir_name = String::from("./");
