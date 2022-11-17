@@ -4,7 +4,7 @@
     <img height="400" src="./images/example.png">
 </p>
 
-A tree linux command clone that adds color to the output.
+A tree linux command clone that adds color to the output. Written in Rust.
 
 ## Installation
 Run the following command to build the executable:
