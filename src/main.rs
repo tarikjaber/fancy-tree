@@ -1,7 +1,7 @@
 use colored::*;
 use std::env;
 
-const INDENTATION_SPACES: u32 = 4;
+mod utility;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -17,22 +17,27 @@ fn main() {
         }
     }
 
-    print_directory("./", 0, depth);
+    println!("{}", ".".blue());
+    print_directory("./", "", 0, depth);
 }
 
 
-fn print_directory(path: &str, indentation: u32, depth: u32) {
-    let paths;
+fn print_directory(path: &str, start: &str, indentation: u32, depth: u32) {
+    let paths: Vec<_>;
 
     match std::fs::read_dir(path) {
-        Ok(p) => paths = p,
+        Ok(p) => paths = p.collect(),
         Err(e) => {
             println!("Error: {}", e);
             return;
         }
     }
 
-    for path in paths.into_iter() {
+    let num_paths = paths.len();
+    let mut index = 0;
+
+    for path in paths {
+
         let file_name;
         let file_path;
 
@@ -40,6 +45,10 @@ fn print_directory(path: &str, indentation: u32, depth: u32) {
             Ok(p) => {
                 file_name = p.file_name();
                 file_path = p.path();
+                if utility::is_hidden(file_name.clone()) {
+                    index+=1;
+                    continue;
+                }
             }
             Err(e) => {
                 println!("Error: {}", e);
@@ -47,13 +56,46 @@ fn print_directory(path: &str, indentation: u32, depth: u32) {
             }
         }
 
-        for i in 0..indentation {
-            if i % INDENTATION_SPACES == 0 {
-                print!("|");
-            } else {
-                print!(" ");
+        let prepend: ColoredString;
+        print!("{}", start);
+
+        index += 1;
+        //println!("Index: {}, Num Paths: {}", index, num_paths);
+        if index == num_paths {
+            match indentation % 3 {
+                0=>{
+                    print!("{}", "└── ".blue());
+                    prepend = "    ".blue();
+                },
+                1=>{
+                    print!("{}", "└── ".cyan());
+                    prepend = "    ".cyan();
+                },
+                2=>{
+                    print!("{}", "└── ".green());
+                    prepend = "    ".green();
+                },
+                _=>panic!("Indentation is not a multiple of 3."),
+            }
+
+        } else {
+            match indentation % 3 {
+                0=>{
+                    print!("{}", "├── ".blue());
+                    prepend = "│   ".blue();
+                },
+                1=>{
+                    print!("{}", "├── ".cyan());
+                    prepend = "│   ".cyan();
+                },
+                2=>{
+                    print!("{}", "├── ".green());
+                    prepend = "│   ".green();
+                },
+                _=>panic!("Indentation is not a multiple of 3."),
             }
         }
+
 
         let fname: String;
 
@@ -68,21 +110,26 @@ fn print_directory(path: &str, indentation: u32, depth: u32) {
             }
 
         if file_path.is_dir() {
-            let mut dir_name = String::from("˅ ");
+            let mut dir_name = String::from("./");
             dir_name.push_str(&fname);
 
-            if (indentation / 4) % 3 == 0 {
-                println!("{}", dir_name);
-            } else if (indentation / 4) % 3 == 1 {
-                println!("{}", dir_name);
-            } else if (indentation / 4) % 3 == 2 {
-                println!("{}", dir_name);
+            match (indentation + 1) % 3 {
+                0=>{
+                    println!("{}", dir_name.bold().blue());
+                },
+                1=>{
+                    println!("{}", dir_name.bold().cyan());
+                },
+                2=>{
+                    println!("{}", dir_name.bold().green());
+                },
+                _=>panic!("Indentation is not a multiple of 3."),
             }
 
             match file_path.to_str() {
                 Some(p) => {
-                    if (indentation / INDENTATION_SPACES) < depth || depth == 0 {
-                        print_directory(p, indentation + INDENTATION_SPACES, depth);
+                    if indentation <= depth {
+                        print_directory(p, format!("{}{}", start, prepend).as_str(), indentation + 1, depth);
                     }
                 }
                 None => {
@@ -95,3 +142,5 @@ fn print_directory(path: &str, indentation: u32, depth: u32) {
         }
     }
 }
+
+

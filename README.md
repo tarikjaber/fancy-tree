@@ -1,6 +1,6 @@
 ## Installation
 Run the following command to build the executable:
-```rust
+```bash
 cargo build --release
 ```
 ## Setup
@@ -8,4 +8,3 @@ Add `./target/release/ct.exe` to PATH.
 
 ## Usage
 You can now run the command `ct` anywhere.
-
